@@ -1,0 +1,12 @@
+version: '3.1'
+services:
+  server:
+    image: server:2
+    container_name: server
+    ports:
+      - "8080:8080"
+  admin:
+    image: web:2
+    container_name: admin
+    ports:
+      - "8888:80"

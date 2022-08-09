@@ -1,0 +1,59 @@
+#ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: face2205
+  namespace: coding
+  annotations:
+    "nginx.ingress.kubernetes.io/proxy-body-size": "300m"
+spec:
+  rules:
+    - host: face2205.coding-space.cn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: face2205
+                port:
+                  number: 8080
+
+---
+#service
+apiVersion: v1
+kind: Service
+metadata:
+  name: face2205
+  namespace: coding
+spec:
+  selector:
+    app: face2205
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+---
+#service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: face2205
+  namespace: coding
+spec:
+  minReadySeconds: 20
+  selector:
+    matchLabels:
+      app: face2205
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: face2205
+    spec:
+      containers:
+        - name: face2205
+          image: registry.cn-zhangjiakou.aliyuncs.com/guanweiming/face-server:${project_version}
+          env:
+            - name: PROFILES
+              value: prod
